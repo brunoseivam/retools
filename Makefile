@@ -27,5 +27,7 @@ $(foreach dir, $(filter %Top, $(DIRS)), \
 iocBoot_DEPEND_DIRS += $(filter %App,$(DIRS))
 
 # Add any additional dependency rules here:
+testApp_DEPEND_DIRS = retoolsApp
+
 
 include $(TOP)/configure/RULES_TOP

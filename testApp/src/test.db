@@ -1,0 +1,8 @@
+record(ai, "DIAG_MTCA01:PICO3_CH0:A") {}
+record(ai, "DIAG_MTCA01:PICO3_CH0:B") {}
+record(ai, "DIAG_MTCA01:PICO3_CH1:A") {}
+record(ai, "DIAG_MTCA01:PICO3_CH1:B") {}
+record(ai, "DIAG_MTCA01:PICO3_CH2:A") {}
+record(ai, "DIAG_MTCA01:PICO3_CH2:B") {}
+record(ai, "DIAG_MTCA01:PICO3_CH3:A") {}
+record(ai, "DIAG_MTCA01:PICO3_CH3:B") {}
