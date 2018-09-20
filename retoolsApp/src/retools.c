@@ -76,7 +76,7 @@ static int reSubstitute(pcre2_code *re, const char *subject,
         dbFinishEntry(&_entry);                                             \
     }while(0)
 
-long reAliasAdd(const char *pattern, const char *alias)
+long epicsShareAPI reAliasAdd(const char *pattern, const char *alias)
 {
     if (!pattern || !alias) {
         errlogSevPrintf(errlogMinor, "Usage: %s \"pattern\" \"alias\"\n",
@@ -106,7 +106,8 @@ long reAliasAdd(const char *pattern, const char *alias)
     return EXIT_SUCCESS;
 }
 
-long reInfoAdd(const char *pattern, const char *name, const char *value)
+long epicsShareAPI reInfoAdd(const char *pattern, const char *name,
+        const char *value)
 {
     if (!pattern || !name || !value) {
         errlogSevPrintf(errlogMinor,
