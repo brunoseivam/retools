@@ -1,8 +1,8 @@
 retools
 =======
 
-retools is an EPICS module that contain a few useful EPICS shell commands that
-use regular expressions. Depends on libpcre2.
+retools is an EPICS module that contains a few useful EPICS shell commands
+that use regular expressions. Depends on libpcre2.
 
 #### `reAliasAdd "pattern" "alias"`
 
