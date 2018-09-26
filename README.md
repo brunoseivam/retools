@@ -4,7 +4,7 @@ retools
 retools is an EPICS module that contains a few useful EPICS shell commands
 that use regular expressions. Depends on libpcre2.
 
-#### `reAliasAdd "pattern" "alias"`
+#### `reAddAlias "pattern" "alias"`
 
 Adds an alias to all records that match the regular expression in `pattern`.
 Example:
@@ -14,7 +14,7 @@ Example:
     ABC:Y
     ABC:Z
 
-    epics> reAliasAdd "ABC:(.*)" "DEF:$1"
+    epics> reAddAlias "ABC:(.*)" "DEF:$1"
     Alias ABC:X -> DEF:X created
     Alias ABC:Y -> DEF:Y created
     Alias ABC:Z -> DEF:Z created
@@ -24,7 +24,7 @@ Example:
     DEF:Y -> ABC:Y
     DEF:Z -> ABC:Z
 
-#### `reInfoAdd "pattern" "name" "value"`
+#### `reAddInfo "pattern" "name" "value"`
 
 Adds an info tag to all records that match the regular expression in `pattern`.
 Matching groups can be used for `value`. Example:
@@ -34,7 +34,7 @@ Matching groups can be used for `value`. Example:
     ABC:Y
     ABC:Z
 
-    epics> reInfoAdd "(.*):.*" "prefix" "$1"
+    epics> reAddInfo "(.*):.*" "prefix" "$1"
     ABC:X: added info(prefix, 'ABC')
     ABC:Y: added info(prefix, 'ABC')
     ABC:Z: added info(prefix, 'ABC')

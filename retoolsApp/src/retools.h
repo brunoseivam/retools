@@ -7,8 +7,8 @@
 extern "C" {
 #endif
 
-epicsShareFunc long reAliasAdd(const char *pattern, const char *alias);
-epicsShareFunc long reInfoAdd(const char *pattern, const char *name,
+epicsShareFunc long reAddAlias(const char *pattern, const char *alias);
+epicsShareFunc long reAddInfo(const char *pattern, const char *name,
         const char *value);
 
 #ifdef __cplusplus

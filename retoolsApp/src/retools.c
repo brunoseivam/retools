@@ -76,7 +76,7 @@ static int reSubstitute(pcre2_code *re, const char *subject,
         dbFinishEntry(&_entry);                                             \
     }while(0)
 
-long epicsShareAPI reAliasAdd(const char *pattern, const char *alias)
+long epicsShareAPI reAddAlias(const char *pattern, const char *alias)
 {
     if (!pattern || !alias) {
         errlogSevPrintf(errlogMinor, "Usage: %s \"pattern\" \"alias\"\n",
@@ -106,7 +106,7 @@ long epicsShareAPI reAliasAdd(const char *pattern, const char *alias)
     return EXIT_SUCCESS;
 }
 
-long epicsShareAPI reInfoAdd(const char *pattern, const char *name,
+long epicsShareAPI reAddInfo(const char *pattern, const char *name,
         const char *value)
 {
     if (!pattern || !name || !value) {
@@ -141,34 +141,34 @@ long epicsShareAPI reInfoAdd(const char *pattern, const char *name,
 
 // EPICS registration code
 
-static const iocshArg reAliasAddArg0 = { "pattern", iocshArgString };
-static const iocshArg reAliasAddArg1 = { "name", iocshArgString };
-static const iocshArg * const reAliasAddArgs[2] = {
-    &reAliasAddArg0, &reAliasAddArg1
+static const iocshArg reAddAliasArg0 = { "pattern", iocshArgString };
+static const iocshArg reAddAliasArg1 = { "name", iocshArgString };
+static const iocshArg * const reAddAliasArgs[2] = {
+    &reAddAliasArg0, &reAddAliasArg1
 };
-static const iocshFuncDef reAliasAddFuncDef = {
-    "reAliasAdd", 2, reAliasAddArgs
+static const iocshFuncDef reAddAliasFuncDef = {
+    "reAddAlias", 2, reAddAliasArgs
 };
 
-static void reAliasAddCallFunc(const iocshArgBuf *args) {
-    reAliasAdd(args[0].sval, args[1].sval);
+static void reAddAliasCallFunc(const iocshArgBuf *args) {
+    reAddAlias(args[0].sval, args[1].sval);
 }
 
-static const iocshArg reInfoAddArg0 = { "pattern", iocshArgString };
-static const iocshArg reInfoAddArg1 = { "name", iocshArgString };
-static const iocshArg reInfoAddArg2 = { "value", iocshArgString };
-static const iocshArg * const reInfoAddArgs[3] = {
-    &reInfoAddArg0, &reInfoAddArg1, &reInfoAddArg2
+static const iocshArg reAddInfoArg0 = { "pattern", iocshArgString };
+static const iocshArg reAddInfoArg1 = { "name", iocshArgString };
+static const iocshArg reAddInfoArg2 = { "value", iocshArgString };
+static const iocshArg * const reAddInfoArgs[3] = {
+    &reAddInfoArg0, &reAddInfoArg1, &reAddInfoArg2
 };
-static const iocshFuncDef reInfoAddFuncDef = { "reInfoAdd", 3, reInfoAddArgs };
+static const iocshFuncDef reAddInfoFuncDef = { "reAddInfo", 3, reAddInfoArgs };
 
-static void reInfoAddCallFunc(const iocshArgBuf *args) {
-    reInfoAdd(args[0].sval, args[1].sval, args[2].sval);
+static void reAddInfoCallFunc(const iocshArgBuf *args) {
+    reAddInfo(args[0].sval, args[1].sval, args[2].sval);
 }
 
 static void retools_registrar(void) {
-    iocshRegister(&reAliasAddFuncDef, reAliasAddCallFunc);
-    iocshRegister(&reInfoAddFuncDef, reInfoAddCallFunc);
+    iocshRegister(&reAddAliasFuncDef, reAddAliasCallFunc);
+    iocshRegister(&reAddInfoFuncDef, reAddInfoCallFunc);
 }
 
 #include <epicsExport.h>

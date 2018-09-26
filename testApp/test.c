@@ -8,9 +8,9 @@
 
 void testReTools_registerRecordDeviceDriver(DBBASE *pdbbase);
 
-static void test_reAliasAdd(void)
+static void test_reAddAlias(void)
 {
-    testDiag("Test reAliasAdd");
+    testDiag("Test reAddAlias");
     testdbPrepare();
 
     testdbReadDatabase("testReTools.dbd", NULL, NULL);
@@ -21,7 +21,7 @@ static void test_reAliasAdd(void)
     testIocInitOk();
     eltc(1);
 
-    testOk1(!reAliasAdd("(.*):A", "$1:X"));
+    testOk1(!reAddAlias("(.*):A", "$1:X"));
 
     // Check that all records ending in A were aliased
     const char *fmt = "DIAG_MTCA01:PICO3_CH%d:%s";
@@ -53,9 +53,9 @@ static void test_reAliasAdd(void)
     testdbCleanup();
 }
 
-static void test_reInfoAdd(void)
+static void test_reAddInfo(void)
 {
-    testDiag("Test reInfoAdd");
+    testDiag("Test reAddInfo");
     testdbPrepare();
 
     testdbReadDatabase("testReTools.dbd", NULL, NULL);
@@ -68,7 +68,7 @@ static void test_reInfoAdd(void)
 
     const char *infoName = "archive";
     const char *infoMonitor = "monitor 1";
-    testOk1(!reInfoAdd("(.*):B", infoName, infoMonitor));
+    testOk1(!reAddInfo("(.*):B", infoName, infoMonitor));
 
 
     // Check that all records ending in B had the info tag added
@@ -103,8 +103,8 @@ static void test_reInfoAdd(void)
 MAIN(reToolsTest)
 {
     testPlan(0);
-    test_reAliasAdd();
-    test_reInfoAdd();
+    test_reAddAlias();
+    test_reAddInfo();
     return testDone();
 }
 
