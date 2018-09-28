@@ -2,7 +2,7 @@ retools
 =======
 
 retools is an EPICS module that contains a few useful EPICS shell commands
-that use regular expressions. Depends on libpcre2.
+that use regular expressions. Uses C++11's regexp.
 
 #### `reAddAlias "pattern" "alias"`
 
