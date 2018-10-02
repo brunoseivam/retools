@@ -21,6 +21,20 @@ Example:
     ABC:X
     ABC:Y
 
+#### `reTest "pattern" "value"`
+
+Tests a substitution of `pattern` with `value`, useful for testing before
+running `reAddAlias` or `reAddInfo`.
+Example:
+
+    epics> dbl
+    ABC:X
+    ABC:Y
+    ABC:Z
+
+    epics> reTest "AB(.*):.*$" "$1"
+    ABC:X C
+
 #### `reAddAlias "pattern" "alias"`
 
 Adds an alias to all records that match the regular expression in `pattern`.

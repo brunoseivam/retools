@@ -77,6 +77,20 @@ long epicsShareAPI reGrep(const char *pattern)
         });
 }
 
+long epicsShareAPI reTest(const char *pattern, const char *value)
+{
+    if (!pattern || !value) {
+        errlogSevPrintf(errlogMinor, "Usage: %s \"pattern\" \"value\"\n",
+                __func__);
+        return EXIT_FAILURE;
+    }
+
+    return forEachMatchingRecord(pattern, value,
+        [](DBENTRY *entry, string const & recName, string const & value) {
+            printf("%s\t%s\n", recName.c_str(), value.c_str());
+        });
+}
+
 long epicsShareAPI reAddAlias(const char *pattern, const char *alias)
 {
     if (!pattern || !alias) {
@@ -124,6 +138,14 @@ static const iocshArg * const reGrepArgs[1] = { &reGrepArg0 };
 static const iocshFuncDef reGrepFuncDef = { "reGrep", 1, reGrepArgs };
 static void reGrepCallFunc(const iocshArgBuf *args) { reGrep(args[0].sval); }
 
+static const iocshArg reTestArg0 = { "pattern", iocshArgString };
+static const iocshArg reTestArg1 = { "name", iocshArgString };
+static const iocshArg * const reTestArgs[2] = { &reTestArg0, &reTestArg1 };
+static const iocshFuncDef reTestFuncDef = { "reTest", 2, reTestArgs };
+static void reTestCallFunc(const iocshArgBuf *args) {
+    reTest(args[0].sval, args[1].sval);
+}
+
 static const iocshArg reAddAliasArg0 = { "pattern", iocshArgString };
 static const iocshArg reAddAliasArg1 = { "name", iocshArgString };
 static const iocshArg * const reAddAliasArgs[2] = {
@@ -150,9 +172,10 @@ static void reAddInfoCallFunc(const iocshArgBuf *args) {
 }
 
 static void retools_registrar(void) {
+    iocshRegister(&reGrepFuncDef, reGrepCallFunc);
+    iocshRegister(&reTestFuncDef, reTestCallFunc);
     iocshRegister(&reAddAliasFuncDef, reAddAliasCallFunc);
     iocshRegister(&reAddInfoFuncDef, reAddInfoCallFunc);
-    iocshRegister(&reGrepFuncDef, reGrepCallFunc);
 }
 
 #include <epicsExport.h>
