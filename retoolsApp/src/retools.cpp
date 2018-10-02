@@ -64,6 +64,19 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
     return EXIT_SUCCESS;
 }
 
+long epicsShareAPI reGrep(const char *pattern)
+{
+    if (!pattern) {
+        errlogSevPrintf(errlogMinor, "Usage: %s \"pattern\"\n", __func__);
+        return EXIT_FAILURE;
+    }
+
+    return forEachMatchingRecord(pattern, "",
+        [](DBENTRY *entry, string const & recName, string const & value) {
+            printf("%s\n", recName.c_str());
+        });
+}
+
 long epicsShareAPI reAddAlias(const char *pattern, const char *alias)
 {
     if (!pattern || !alias) {
@@ -106,6 +119,10 @@ long epicsShareAPI reAddInfo(const char *pattern, const char *name,
 
 
 // EPICS registration code
+static const iocshArg reGrepArg0 = { "pattern", iocshArgString };
+static const iocshArg * const reGrepArgs[1] = { &reGrepArg0 };
+static const iocshFuncDef reGrepFuncDef = { "reGrep", 1, reGrepArgs };
+static void reGrepCallFunc(const iocshArgBuf *args) { reGrep(args[0].sval); }
 
 static const iocshArg reAddAliasArg0 = { "pattern", iocshArgString };
 static const iocshArg reAddAliasArg1 = { "name", iocshArgString };
@@ -135,6 +152,7 @@ static void reAddInfoCallFunc(const iocshArgBuf *args) {
 static void retools_registrar(void) {
     iocshRegister(&reAddAliasFuncDef, reAddAliasCallFunc);
     iocshRegister(&reAddInfoFuncDef, reAddInfoCallFunc);
+    iocshRegister(&reGrepFuncDef, reGrepCallFunc);
 }
 
 #include <epicsExport.h>

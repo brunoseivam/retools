@@ -4,6 +4,23 @@ retools
 retools is an EPICS module that contains a few useful EPICS shell commands
 that use regular expressions. Uses C++11's regexp.
 
+#### `reGrep "pattern"`
+
+Prints record names that match the regular expression in `pattern`.
+Example:
+
+    epics> dbl
+    ABC:X
+    ABC:Y
+    ABC:Z
+
+    epics> reGrep "X"
+    ABC:X
+
+    epics> reGrep "[X|Y]"
+    ABC:X
+    ABC:Y
+
 #### `reAddAlias "pattern" "alias"`
 
 Adds an alias to all records that match the regular expression in `pattern`.
