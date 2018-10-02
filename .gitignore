@@ -1,0 +1,11 @@
+.project
+.cproject
+.settings/
+/bin/
+/db/
+/dbd/
+/include/
+/lib/
+O.*/
+*.local
+envPaths
