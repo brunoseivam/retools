@@ -37,17 +37,25 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
     while (!_status) {
         _status = dbFirstRecord(&_entry);
         while (!_status) {
-            DBENTRY entry;
-            dbCopyEntryContents(&_entry, &entry);
-
-            string recName(dbGetRecordName(&entry));
+            string recName(dbGetRecordName(&_entry));
             string subst(regex_replace(recName, re, replace));
 
             // There was a match
-            if (recName != subst)
-                func(&entry, recName, subst);
+            if (recName != subst) {
+                DBENTRY entry;
 
-            dbFinishEntry(&entry);
+                // We matched with an alias, find the aliased record
+                if (dbIsAlias(&_entry)) {
+                    dbInitEntry(pdbbase, &entry);
+                    dbFindField(&_entry, "NAME");
+                    dbFindRecord(&entry, dbGetString(&_entry));
+                } else
+                    dbCopyEntryContents(&_entry, &entry);
+
+                func(&entry, recName, subst);
+                dbFinishEntry(&entry);
+            }
+
             _status = dbNextRecord(&_entry);
         }
         _status = dbNextRecordType(&_entry);
