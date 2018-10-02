@@ -1,5 +1,10 @@
 # Release Notes
 
+## R1-2-0 (October 2, 2018)
+
+* Add `reGrep` and `reTest` functions.
+* Make it possible to add info tags and aliases to a base record of an alias.
+
 ## R1-1-0 (September 28, 2018)
 
 * Use C++'s `regexp` instead of libpcre2 (libpcre2 is not available on Jessie)
