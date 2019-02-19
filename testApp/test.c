@@ -21,7 +21,7 @@ static void test_reAddAlias(void)
     testIocInitOk();
     eltc(1);
 
-    testOk1(!reAddAlias("(.*):A", "$1:X"));
+    testOk1(!reAddAlias("(.*):A", "$1:X", 0));
 
     // Check that all records ending in A were aliased
     const char *fmt = "DIAG_MTCA01:PICO3_CH%d:%s";
@@ -68,7 +68,7 @@ static void test_reAddInfo(void)
 
     const char *infoName = "archive";
     const char *infoMonitor = "monitor 1";
-    testOk1(!reAddInfo("(.*):B", infoName, infoMonitor));
+    testOk1(!reAddInfo("(.*):B", infoName, infoMonitor, 0));
 
 
     // Check that all records ending in B had the info tag added

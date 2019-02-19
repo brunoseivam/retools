@@ -1,5 +1,9 @@
 # Release Notes
 
+## R1-3-0 (February 19, 2019)
+
+* Add `verbose` flag to `reAddAlias` and `reAddInfo` functions.
+
 ## R1-2-0 (October 2, 2018)
 
 * Add `reGrep` and `reTest` functions.
