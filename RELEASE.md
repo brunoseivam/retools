@@ -1,5 +1,9 @@
 # Release Notes
 
+## R1-4-0 (April 23, 2019)
+
+* Remove `verbose` flag in favor of a `reToolsVerbose` variable.
+
 ## R1-3-0 (February 19, 2019)
 
 * Add `verbose` flag to `reAddAlias` and `reAddInfo` functions.

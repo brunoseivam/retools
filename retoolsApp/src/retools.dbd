@@ -1,1 +1,2 @@
+variable(reToolsVerbose,int)
 registrar(retools_registrar)

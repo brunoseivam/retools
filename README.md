@@ -35,7 +35,7 @@ Example:
     epics> reTest "AB(.*):.*$" "$1"
     ABC:X C
 
-#### `reAddAlias "pattern" "alias" "verbose"`
+#### `reAddAlias "pattern" "alias"`
 
 Adds an alias to all records that match the regular expression in `pattern`.
 Example:
@@ -45,7 +45,7 @@ Example:
     ABC:Y
     ABC:Z
 
-    epics> reAddAlias "ABC:(.*)" "DEF:$1" 1
+    epics> reAddAlias "ABC:(.*)" "DEF:$1"
     Alias ABC:X -> DEF:X created
     Alias ABC:Y -> DEF:Y created
     Alias ABC:Z -> DEF:Z created
@@ -55,7 +55,7 @@ Example:
     DEF:Y -> ABC:Y
     DEF:Z -> ABC:Z
 
-#### `reAddInfo "pattern" "name" "value" "verbose"`
+#### `reAddInfo "pattern" "name" "value"`
 
 Adds an info tag to all records that match the regular expression in `pattern`.
 Matching groups can be used for `value`. Example:
@@ -65,7 +65,7 @@ Matching groups can be used for `value`. Example:
     ABC:Y
     ABC:Z
 
-    epics> reAddInfo "(.*):.*" "prefix" "$1" 1
+    epics> reAddInfo "(.*):.*" "prefix" "$1"
     ABC:X: added info(prefix, 'ABC')
     ABC:Y: added info(prefix, 'ABC')
     ABC:Z: added info(prefix, 'ABC')
@@ -83,4 +83,12 @@ Matching groups can be used for `value`. Example:
         field(DTYP,"Soft Channel")
         info("prefix","ABC")
     }
+
+### Disabling verbose output
+
+By default, retools has verbose output. To disable it, set the variable
+`reToolsVerbose` to `0`:
+
+    epics> var reToolsVerbose 0
+    epics>
 

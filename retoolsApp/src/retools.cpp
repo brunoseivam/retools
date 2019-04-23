@@ -13,6 +13,8 @@ using std::regex_replace;
 using std::regex_error;
 using std::string;
 
+int reToolsVerbose = 1;
+
 typedef std::function<void(DBENTRY*,string const &,string const &)>
     foreach_func_t;
 
@@ -91,8 +93,7 @@ long epicsShareAPI reTest(const char *pattern, const char *value)
         });
 }
 
-long epicsShareAPI reAddAlias(const char *pattern, const char *alias,
-        int verbose)
+long epicsShareAPI reAddAlias(const char *pattern, const char *alias)
 {
     if (!pattern || !alias) {
         errlogSevPrintf(errlogMinor, "Usage: %s \"pattern\" \"alias\"\n",
@@ -101,18 +102,18 @@ long epicsShareAPI reAddAlias(const char *pattern, const char *alias,
     }
 
     return forEachMatchingRecord(pattern, alias,
-        [verbose](DBENTRY *entry, string const & recName, string const & alias) {
+        [](DBENTRY *entry, string const & recName, string const & alias) {
             if(dbCreateAlias(entry, alias.c_str()))
                 errlogSevPrintf(errlogMinor, "Failed to alias %s -> %s\n",
                     recName.c_str(), alias.c_str());
-            else if(verbose)
+            else if(reToolsVerbose)
                 printf("Alias %s -> %s created\n", recName.c_str(),
                     alias.c_str());
         });
 }
 
 long epicsShareAPI reAddInfo(const char *pattern, const char *name,
-        const char *value, int verbose)
+        const char *value)
 {
     if (!pattern || !name || !value) {
         errlogSevPrintf(errlogMinor,
@@ -121,12 +122,12 @@ long epicsShareAPI reAddInfo(const char *pattern, const char *name,
     }
 
     return forEachMatchingRecord(pattern, value,
-        [name, verbose](DBENTRY *entry, string const & recName, string const & value) {
+        [name](DBENTRY *entry, string const & recName, string const & value) {
             if(dbPutInfo(entry, name, value.c_str()))
                 errlogSevPrintf(errlogMajor,
                     "%s: Failed to add info(%s, '%s')\n", recName.c_str(),
                     name, value.c_str());
-            else if(verbose)
+            else if(reToolsVerbose)
                 printf("%s: added info(%s, '%s')\n", recName.c_str(), name,
                     value.c_str());
         });
@@ -149,29 +150,27 @@ static void reTestCallFunc(const iocshArgBuf *args) {
 
 static const iocshArg reAddAliasArg0 = { "pattern", iocshArgString };
 static const iocshArg reAddAliasArg1 = { "name", iocshArgString };
-static const iocshArg reAddAliasArg2 = { "verbose", iocshArgInt };
-static const iocshArg * const reAddAliasArgs[3] = {
-    &reAddAliasArg0, &reAddAliasArg1, &reAddAliasArg2
+static const iocshArg * const reAddAliasArgs[2] = {
+    &reAddAliasArg0, &reAddAliasArg1
 };
 static const iocshFuncDef reAddAliasFuncDef = {
-    "reAddAlias", 3, reAddAliasArgs
+    "reAddAlias", 2, reAddAliasArgs
 };
 
 static void reAddAliasCallFunc(const iocshArgBuf *args) {
-    reAddAlias(args[0].sval, args[1].sval, args[2].ival);
+    reAddAlias(args[0].sval, args[1].sval);
 }
 
 static const iocshArg reAddInfoArg0 = { "pattern", iocshArgString };
 static const iocshArg reAddInfoArg1 = { "name", iocshArgString };
 static const iocshArg reAddInfoArg2 = { "value", iocshArgString };
-static const iocshArg reAddInfoArg3 = { "verbose", iocshArgInt };
-static const iocshArg * const reAddInfoArgs[4] = {
-    &reAddInfoArg0, &reAddInfoArg1, &reAddInfoArg2, &reAddInfoArg3
+static const iocshArg * const reAddInfoArgs[3] = {
+    &reAddInfoArg0, &reAddInfoArg1, &reAddInfoArg2
 };
-static const iocshFuncDef reAddInfoFuncDef = { "reAddInfo", 4, reAddInfoArgs };
+static const iocshFuncDef reAddInfoFuncDef = { "reAddInfo", 3, reAddInfoArgs };
 
 static void reAddInfoCallFunc(const iocshArgBuf *args) {
-    reAddInfo(args[0].sval, args[1].sval, args[2].sval, args[3].ival);
+    reAddInfo(args[0].sval, args[1].sval, args[2].sval);
 }
 
 static void retools_registrar(void) {
@@ -183,3 +182,4 @@ static void retools_registrar(void) {
 
 #include <epicsExport.h>
 epicsExportRegistrar(retools_registrar);
+epicsExportAddress(int, reToolsVerbose);
