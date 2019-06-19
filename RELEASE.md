@@ -1,5 +1,9 @@
 # Release Notes
 
+## R1-4-1 (June 19, 2019)
+
+* Improve performance by testing `match` before performing a subsitution.
+
 ## R1-4-0 (April 23, 2019)
 
 * Remove `verbose` flag in favor of a `reToolsVerbose` variable.
