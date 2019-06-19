@@ -7,6 +7,9 @@
 extern "C" {
 #endif
 
+epicsShareExtern int reToolsVerbose;
+epicsShareExtern int reToolsBatch;
+
 epicsShareFunc long reAddAlias(const char *pattern, const char *alias);
 epicsShareFunc long reAddInfo(const char *pattern, const char *name,
         const char *value);

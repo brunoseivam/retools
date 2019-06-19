@@ -92,3 +92,32 @@ By default, retools has verbose output. To disable it, set the variable
     epics> var reToolsVerbose 0
     epics>
 
+### Speeding up execution (at a temporary memory comsumption spike cost)
+
+By default, each `re*` command executes immediately. This involves
+traversing the entire linked list of records and testing the regular
+expression on each record name. If the record in question is an alias,
+a second traversal is required (for EPICS <= 3.15) in order to find
+the aliased record. These traversals are potentially slow since
+there's likely no data locality when following linked list pointers
+and the processor cache gets invalidated frequently.
+
+For that reason, it is possible to delay the execution of `re*`
+commands (issued prior to `iocInit`) until `iocHookAfterDatabaseRunning`
+by setting the variable `reToolsBatch` to `1`:
+
+    epics> var reToolsBatch 1
+    epics>
+
+In this situation, at `iocHookAfterDatabaseRunning`, a Hash Map
+from record name to `DBENTRY` is built and the `re*` commands are
+run against this Hash Map instead. This has the benefit of improving
+data locality at a cost of increased memory usage. The Hash Map
+is freed after all delayed `re*` commands are run.
+
+Subsequent `re*` commands that are issued after `iocInit` will execute
+immediately.
+
+Note: since in batch mode the Hash Map is built before any `re*` command
+run, batched `re*` commands won't be able to operate on an alias created
+by a previous `reAddAlias` command on the same batch.
