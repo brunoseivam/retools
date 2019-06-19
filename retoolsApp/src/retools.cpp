@@ -40,10 +40,9 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
         _status = dbFirstRecord(&_entry);
         while (!_status) {
             string recName(dbGetRecordName(&_entry));
-            string subst(regex_replace(recName, re, replace));
 
             // There was a match
-            if (recName != subst) {
+            if (regex_match(recName, re)) {
                 DBENTRY entry;
 
                 // We matched with an alias, find the aliased record
@@ -54,7 +53,7 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
                 } else
                     dbCopyEntryContents(&_entry, &entry);
 
-                func(&entry, recName, subst);
+                func(&entry, recName, regex_replace(recName, re, replace));
                 dbFinishEntry(&entry);
             }
 
