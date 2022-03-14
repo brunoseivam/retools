@@ -132,6 +132,27 @@ long epicsShareAPI reAddInfo(const char *pattern, const char *name,
         });
 }
 
+long epicsShareAPI rePutField(const char *pattern, const char *name,
+        const char *value)
+{
+    if (!pattern || !name || !value) {
+        errlogSevPrintf(errlogMinor,
+                "Usage: %s \"pattern\" \"name\" \"value\"\n", __func__);
+        return EXIT_FAILURE;
+    }
+
+    return forEachMatchingRecord(pattern, value,
+        [name](DBENTRY *entry, string const & recName, string const & value) {
+            if(dbPutField(entry, name, value.c_str()))
+                errlogSevPrintf(errlogMajor,
+                    "%s: Failed to add info(%s, '%s')\n", recName.c_str(),
+                    name, value.c_str());
+            else if(reToolsVerbose)
+                printf("%s: added info(%s, '%s')\n", recName.c_str(), name,
+                    value.c_str());
+        });
+}
+
 
 // EPICS registration code
 static const iocshArg reGrepArg0 = { "pattern", iocshArgString };
