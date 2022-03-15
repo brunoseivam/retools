@@ -10,7 +10,7 @@ extern "C" {
 epicsShareFunc long reAddAlias(const char *pattern, const char *alias);
 epicsShareFunc long reAddInfo(const char *pattern, const char *name,
         const char *value);
-epicsShareFunc long rePutField(const char *pattern, const char *name,
+epicsShareFunc long rePutField(const char *pattern, const char *field,
         const char *value);
 
 #ifdef __cplusplus

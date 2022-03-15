@@ -132,25 +132,24 @@ long epicsShareAPI reAddInfo(const char *pattern, const char *name,
         });
 }
 
-long epicsShareAPI rePutField(const char *pattern, const char *name,
+long epicsShareAPI rePutField(const char *pattern, const char *field,
         const char *value)
 {
-    if (!pattern || !name || !value) {
+    if (!pattern || !field || !value) {
         errlogSevPrintf(errlogMinor,
                 "Usage: %s \"pattern\" \"field\" \"value\"\n", __func__);
         return EXIT_FAILURE;
     }
 
     return forEachMatchingRecord(pattern, value,
-        [name](DBENTRY *entry, string const & recName, string const & value) {
-            string fieldName = recName + "." + name;
-            dbFindField(entry,name);
+        [field](DBENTRY *entry, string const & recName, string const & value) {
+            dbFindField(entry,field);
             if(dbPutString(entry, value.c_str()))
                 errlogSevPrintf(errlogMajor,
-                    "%s: Failed to add info(%s, '%s')\n", recName.c_str(),
-                    name, value.c_str());
+                    "%s: Failed to add field(%s, '%s')\n", recName.c_str(),
+                    field, value.c_str());
             else if(reToolsVerbose)
-                printf("%s: added info(%s, '%s')\n", recName.c_str(), name,
+                printf("%s: added field(%s, '%s')\n", recName.c_str(), field,
                     value.c_str());
         });
 }
@@ -196,7 +195,7 @@ static void reAddInfoCallFunc(const iocshArgBuf *args) {
 }
 
 static const iocshArg rePutFieldArg0 = { "pattern", iocshArgString };
-static const iocshArg rePutFieldArg1 = { "name", iocshArgString };
+static const iocshArg rePutFieldArg1 = { "field", iocshArgString };
 static const iocshArg rePutFieldArg2 = { "value", iocshArgString };
 static const iocshArg * const rePutFieldArgs[3] = {
     &rePutFieldArg0, &rePutFieldArg1, &rePutFieldArg2
