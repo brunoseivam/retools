@@ -134,7 +134,7 @@ static void test_rePutField(void)
         testOk(found, "%s: field found", name);
 
         if (found) {
-            testOk(!strcmp(fieldName, dbGetString(&entry)),
+            testOk(!strcmp(fieldValue, dbGetString(&entry)),
                     "%s info name is correct", name);
         }
         dbFinishEntry(&entry);
