@@ -97,7 +97,7 @@ Can be used for the VAL field. Example:
     epics> rePutField "(.*):.*" "EGU" "units"
     ABC:X: added field(EGU, 'units')
     ABC:Y: added field(EGU, 'units')
-    ABC:Z: added field(EGU, "units')
+    ABC:Z: added field(EGU, 'units')
 
     epics> dbDumpRecord
     record(ai,"ABC:X") {
