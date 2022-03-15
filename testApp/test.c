@@ -114,7 +114,7 @@ static void test_rePutField(void)
 
     const char *fieldName = "EGU";
     const char *fieldValue = "units";
-    testOk1(!rePutField("(.*):B", fieldName, fieldMonitor));
+    testOk1(!rePutField("(.*):B", fieldName, fieldValue));
 
 
     // Check that all records ending in B had the info tag added
