@@ -143,7 +143,7 @@ long epicsShareAPI rePutField(const char *pattern, const char *name,
 
     return forEachMatchingRecord(pattern, value,
         [name](DBENTRY *entry, string const & recName, string const & value) {
-            if(dbPutField(entry, name+":"+field, value.c_str()))
+            if(dbPutRecordAttribute(entry, name, value.c_str()))
                 errlogSevPrintf(errlogMajor,
                     "%s: Failed to add info(%s, '%s')\n", recName.c_str(),
                     name, value.c_str());
