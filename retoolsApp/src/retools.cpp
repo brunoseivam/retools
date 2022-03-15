@@ -133,11 +133,11 @@ long epicsShareAPI reAddInfo(const char *pattern, const char *name,
 }
 
 long epicsShareAPI rePutField(const char *pattern, const char *name,
-        const char *field, const char *value)
+        const char *value)
 {
-    if (!pattern || !name || !field || !value) {
+    if (!pattern || !name || !value) {
         errlogSevPrintf(errlogMinor,
-                "Usage: %s \"pattern\" \"name\" \"field\" \"value\"\n", __func__);
+                "Usage: %s \"pattern\" \"field\" \"value\"\n", __func__);
         return EXIT_FAILURE;
     }
 
