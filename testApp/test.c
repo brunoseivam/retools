@@ -99,12 +99,57 @@ static void test_reAddInfo(void)
     testIocShutdownOk();
 }
 
+static void test_rePutField(void)
+{
+    testDiag("Test rePutField");
+    testdbPrepare();
+
+    testdbReadDatabase("testReTools.dbd", NULL, NULL);
+    testReTools_registerRecordDeviceDriver(pdbbase);
+    testdbReadDatabase("test.db", NULL, NULL);
+
+    eltc(0);
+    testIocInitOk();
+    eltc(1);
+
+    const char *fieldName = "EGU";
+    const char *fieldValue = "units";
+    testOk1(!rePutField("(.*):B", fieldName, fieldMonitor));
+
+
+    // Check that all records ending in B had the info tag added
+    const char *fmt = "DIAG_MTCA01:PICO3_CH%d:%s";
+    int i = 0;
+    for (i = 0; i < 4; ++i) {
+        char name[256];
+        snprintf(name, sizeof(name), fmt, i, "B");
+
+        DBENTRY entry;
+        dbInitEntry(pdbbase, &entry);
+
+        if (dbFindRecord(&entry, name))
+            testAbort("%s not found", name);
+
+        long found = !dbFindField(&entry, fieldName);
+        testOk(found, "%s: field found", name);
+
+        if (found) {
+            testOk(!strcmp(fieldName, dbGetString(&entry)),
+                    "%s info name is correct", name);
+        }
+        dbFinishEntry(&entry);
+    }
+
+    testIocShutdownOk();
+}
+
 
 MAIN(reToolsTest)
 {
     testPlan(0);
     test_reAddAlias();
     test_reAddInfo();
+    test_rePutField();
     return testDone();
 }
 
