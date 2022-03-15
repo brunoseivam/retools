@@ -193,11 +193,25 @@ static void reAddInfoCallFunc(const iocshArgBuf *args) {
     reAddInfo(args[0].sval, args[1].sval, args[2].sval);
 }
 
+static const iocshArg rePutFieldArg0 = { "pattern", iocshArgString };
+static const iocshArg rePutFieldArg1 = { "name", iocshArgString };
+static const iocshArg rePutFieldArg2 = { "value", iocshArgString };
+static const iocshArg * const rePutFieldArgs[3] = {
+    &rePutFieldArg0, &rePutFieldArg1, &rePutFieldArg2
+};
+static const iocshFuncDef rePutFieldFuncDef = { "rePutField", 3, rePutFieldArgs };
+
+static void rePutFieldCallFunc(const iocshArgBuf *args) {
+    rePutField(args[0].sval, args[1].sval, args[2].sval);
+}
+
+
 static void retools_registrar(void) {
     iocshRegister(&reGrepFuncDef, reGrepCallFunc);
     iocshRegister(&reTestFuncDef, reTestCallFunc);
     iocshRegister(&reAddAliasFuncDef, reAddAliasCallFunc);
     iocshRegister(&reAddInfoFuncDef, reAddInfoCallFunc);
+    iocshRegister(&rePutFieldFuncDef, rePutFieldCallFunc);
 }
 
 #include <epicsExport.h>
