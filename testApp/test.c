@@ -117,7 +117,7 @@ static void test_rePutField(void)
     testOk1(!rePutField("(.*):B", fieldName, fieldValue));
 
 
-    // Check that all records ending in B had the info tag added
+    // Check that all records ending in B had the EGU field changed to "units"
     const char *fmt = "DIAG_MTCA01:PICO3_CH%d:%s";
     int i = 0;
     for (i = 0; i < 4; ++i) {
