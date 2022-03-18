@@ -4,7 +4,6 @@
 #include <errlog.h>
 #include <dbStaticLib.h>
 #include <dbAccessDefs.h>
-
 #include <functional>
 #include <regex>
 
@@ -143,13 +142,19 @@ long epicsShareAPI rePutField(const char *pattern, const char *field,
 
     return forEachMatchingRecord(pattern, value,
         [field](DBENTRY *entry, string const & recName, string const & value) {
-            dbFindField(entry,field);
-            if(dbPutString(entry, value.c_str()))
+	    DBADDR addr;
+	    string fieldName = recName + "." + field;
+	    
+	    if(dbNameToAddr(fieldName.c_str(), &addr))
                 errlogSevPrintf(errlogMajor,
-                    "%s: Failed to add field(%s, '%s')\n", recName.c_str(),
+                    "%s: does not possess field %s \n", recName.c_str(),
+                    field);
+            else if(dbPutField(&addr, DBR_STRING, value.c_str(),1L)) 
+                errlogSevPrintf(errlogMajor,
+                    "%s: Failed to put field(%s, '%s')\n", recName.c_str(),
                     field, value.c_str());
             else if(reToolsVerbose)
-                printf("%s: added field(%s, '%s')\n", recName.c_str(), field,
+                printf("%s: put field(%s, '%s')\n", recName.c_str(), field,
                     value.c_str());
         });
 }
