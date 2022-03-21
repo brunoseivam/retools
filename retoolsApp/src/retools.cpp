@@ -142,10 +142,10 @@ long epicsShareAPI rePutField(const char *pattern, const char *field,
 
     return forEachMatchingRecord(pattern, value,
         [field](DBENTRY *entry, string const & recName, string const & value) {
-	    DBADDR addr;
-	    string fieldName = recName + "." + field;
-	    
-	    if(dbNameToAddr(fieldName.c_str(), &addr))
+            DBADDR addr;
+            string fieldName = recName + "." + field;
+
+            if(dbNameToAddr(fieldName.c_str(), &addr))
                 errlogSevPrintf(errlogMajor,
                     "%s: does not possess field %s \n", recName.c_str(),
                     field);
