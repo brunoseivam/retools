@@ -4,7 +4,6 @@
 #include <errlog.h>
 #include <dbStaticLib.h>
 #include <dbAccessDefs.h>
-
 #include <functional>
 #include <regex>
 
@@ -132,6 +131,34 @@ long epicsShareAPI reAddInfo(const char *pattern, const char *name,
         });
 }
 
+long epicsShareAPI rePutField(const char *pattern, const char *field,
+        const char *value)
+{
+    if (!pattern || !field || !value) {
+        errlogSevPrintf(errlogMinor,
+                "Usage: %s \"pattern\" \"field\" \"value\"\n", __func__);
+        return EXIT_FAILURE;
+    }
+
+    return forEachMatchingRecord(pattern, value,
+        [field](DBENTRY *entry, string const & recName, string const & value) {
+            DBADDR addr;
+            string fieldName = recName + "." + field;
+
+            if(dbNameToAddr(fieldName.c_str(), &addr))
+                errlogSevPrintf(errlogMajor,
+                    "%s: does not possess field %s \n", recName.c_str(),
+                    field);
+            else if(dbPutField(&addr, DBR_STRING, value.c_str(),1L)) 
+                errlogSevPrintf(errlogMajor,
+                    "%s: Failed to put field(%s, '%s')\n", recName.c_str(),
+                    field, value.c_str());
+            else if(reToolsVerbose)
+                printf("%s: put field(%s, '%s')\n", recName.c_str(), field,
+                    value.c_str());
+        });
+}
+
 
 // EPICS registration code
 static const iocshArg reGrepArg0 = { "pattern", iocshArgString };
@@ -172,11 +199,25 @@ static void reAddInfoCallFunc(const iocshArgBuf *args) {
     reAddInfo(args[0].sval, args[1].sval, args[2].sval);
 }
 
+static const iocshArg rePutFieldArg0 = { "pattern", iocshArgString };
+static const iocshArg rePutFieldArg1 = { "field", iocshArgString };
+static const iocshArg rePutFieldArg2 = { "value", iocshArgString };
+static const iocshArg * const rePutFieldArgs[3] = {
+    &rePutFieldArg0, &rePutFieldArg1, &rePutFieldArg2
+};
+static const iocshFuncDef rePutFieldFuncDef = { "rePutField", 3, rePutFieldArgs };
+
+static void rePutFieldCallFunc(const iocshArgBuf *args) {
+    rePutField(args[0].sval, args[1].sval, args[2].sval);
+}
+
+
 static void retools_registrar(void) {
     iocshRegister(&reGrepFuncDef, reGrepCallFunc);
     iocshRegister(&reTestFuncDef, reTestCallFunc);
     iocshRegister(&reAddAliasFuncDef, reAddAliasCallFunc);
     iocshRegister(&reAddInfoFuncDef, reAddInfoCallFunc);
+    iocshRegister(&rePutFieldFuncDef, rePutFieldCallFunc);
 }
 
 #include <epicsExport.h>

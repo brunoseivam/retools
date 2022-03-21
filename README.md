@@ -84,6 +84,35 @@ Matching groups can be used for `value`. Example:
         info("prefix","ABC")
     }
 
+#### `rePutField "pattern" "field" "value"`
+
+Sets the value of a particular field to all records that match the regular expression in `pattern`.
+Can be used for the VAL field. Example:
+
+    epics> dbl
+    ABC:X
+    ABC:Y
+    ABC:Z
+
+    epics> rePutField "(.*):.*" "EGU" "units"
+    ABC:X: put field(EGU, 'units')
+    ABC:Y: put field(EGU, 'units')
+    ABC:Z: put field(EGU, 'units')
+
+    epics> dbDumpRecord
+    record(ai,"ABC:X") {
+        field(DTYP,"Soft Channel")
+        field(EGU,"units")
+    }
+    record(ai,"ABC:Y") {
+        field(DTYP,"Soft Channel")
+        field(EGU,"units")
+    }
+    record(ai,"ABC:Z") {
+        field(DTYP,"Soft Channel")
+        field(EGU,"units")
+    }
+
 ### Disabling verbose output
 
 By default, retools has verbose output. To disable it, set the variable
