@@ -113,6 +113,21 @@ Can be used for the VAL field. Example:
         field(EGU,"units")
     }
 
+#### `reGetField "pattern" "field"`
+
+Gets the value of a particular field to all records that match the regular expression in `pattern`.
+Can be used for the VAL field. Example:
+
+    epics> dbl
+    ABC:X
+    ABC:Y
+    ABC:Z
+
+    epics> reGetField "(.*):.*" "EGU"
+    ABC:X 'units'
+    ABC:Y 'units'
+    ABC:Z 'units'
+
 ### Disabling verbose output
 
 By default, retools has verbose output. To disable it, set the variable

@@ -159,6 +159,35 @@ long epicsShareAPI rePutField(const char *pattern, const char *field,
         });
 }
 
+long epicsShareAPI reGetField(const char *pattern, const char *field)
+{
+    if (!pattern || !field) {
+        errlogSevPrintf(errlogMinor,
+                "Usage: %s \"pattern\" \"field\"\n", __func__);
+        return EXIT_FAILURE;
+    }
+
+    return forEachMatchingRecord(pattern, "",
+        [field](DBENTRY *entry, string const & recName, string const & value) {
+            DBADDR addr;
+            string fieldName = recName + "." + field;
+            char buffer[MAX_STRING_SIZE+1];
+            long one = 1;
+
+            if(dbNameToAddr(fieldName.c_str(), &addr))
+                errlogSevPrintf(errlogMajor,
+                    "%s: does not possess field %s \n", recName.c_str(),
+                    field);
+            else if(dbGetField(&addr, DBR_STRING, &buffer, NULL, &one, NULL))
+                errlogSevPrintf(errlogMajor,
+                    "%s: Failed to get field %s\n", recName.c_str(),
+                    field);
+            else{
+                printf("%s.%s '%s'\n", recName.c_str(), field, buffer);
+                }
+        });
+}
+
 
 // EPICS registration code
 static const iocshArg reGrepArg0 = { "pattern", iocshArgString };
@@ -211,6 +240,17 @@ static void rePutFieldCallFunc(const iocshArgBuf *args) {
     rePutField(args[0].sval, args[1].sval, args[2].sval);
 }
 
+static const iocshArg reGetFieldArg0 = { "pattern", iocshArgString };
+static const iocshArg reGetFieldArg1 = { "field", iocshArgString };
+static const iocshArg * const reGetFieldArgs[2] = {
+    &reGetFieldArg0, &reGetFieldArg1
+};
+static const iocshFuncDef reGetFieldFuncDef = { "reGetField", 2, reGetFieldArgs };
+
+static void reGetFieldCallFunc(const iocshArgBuf *args) {
+    reGetField(args[0].sval, args[1].sval);
+}
+
 
 static void retools_registrar(void) {
     iocshRegister(&reGrepFuncDef, reGrepCallFunc);
@@ -218,6 +258,7 @@ static void retools_registrar(void) {
     iocshRegister(&reAddAliasFuncDef, reAddAliasCallFunc);
     iocshRegister(&reAddInfoFuncDef, reAddInfoCallFunc);
     iocshRegister(&rePutFieldFuncDef, rePutFieldCallFunc);
+    iocshRegister(&reGetFieldFuncDef, reGetFieldCallFunc);
 }
 
 #include <epicsExport.h>

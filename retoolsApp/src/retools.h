@@ -12,6 +12,7 @@ epicsShareFunc long reAddInfo(const char *pattern, const char *name,
         const char *value);
 epicsShareFunc long rePutField(const char *pattern, const char *field,
         const char *value);
+epicsShareFunc long reGetField(const char *pattern, const char *field);
 
 #ifdef __cplusplus
 }
