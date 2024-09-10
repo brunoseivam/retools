@@ -34,6 +34,7 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
     dbInitEntry(pdbbase, &_entry);
 
     long _status = dbFirstRecordType(&_entry);
+    unsigned int n_records = 0;
 
     while (!_status) {
         _status = dbFirstRecord(&_entry);
@@ -54,6 +55,8 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
 
                 func(&entry, recName, regex_replace(recName, re, replace));
                 dbFinishEntry(&entry);
+                // Count how many matches
+                n_records++;
             }
 
             _status = dbNextRecord(&_entry);
@@ -61,6 +64,9 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
         _status = dbNextRecordType(&_entry);
     }
     dbFinishEntry(&_entry);
+    // If desired, display total of records processed
+    if(reToolsVerbose==2)
+        printf("Total matches: %u\n", n_records);
     return EXIT_SUCCESS;
 }
 
@@ -104,7 +110,7 @@ long epicsShareAPI reAddAlias(const char *pattern, const char *alias)
             if(dbCreateAlias(entry, alias.c_str()))
                 errlogSevPrintf(errlogMinor, "Failed to alias %s -> %s\n",
                     recName.c_str(), alias.c_str());
-            else if(reToolsVerbose)
+            else if(reToolsVerbose==1)
                 printf("Alias %s -> %s created\n", recName.c_str(),
                     alias.c_str());
         });

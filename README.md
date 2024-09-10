@@ -113,7 +113,7 @@ Can be used for the VAL field. Example:
         field(EGU,"units")
     }
 
-### Disabling verbose output
+### Adjusting output verbosity
 
 By default, retools has verbose output. To disable it, set the variable
 `reToolsVerbose` to `0`:
@@ -121,3 +121,4 @@ By default, retools has verbose output. To disable it, set the variable
     epics> var reToolsVerbose 0
     epics>
 
+You may also set `reToolsVerbose` to `2` so retools only displays the number of record matches found by each function.
