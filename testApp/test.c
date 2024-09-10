@@ -3,6 +3,7 @@
 #include <testMain.h>
 #include <errlog.h>
 #include <dbAccess.h>
+#include <epicsStdio.h>
 #include <retools.h>
 #include <string.h>
 
@@ -143,6 +144,44 @@ static void test_rePutField(void)
     testIocShutdownOk();
 }
 
+static void test_reGetField(void)
+{
+    testDiag("Test reGetField");
+    testdbPrepare();
+
+    FILE * temp;
+    char * line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    temp = tmpfile();
+
+    testdbReadDatabase("testReTools.dbd", NULL, NULL);
+    testReTools_registerRecordDeviceDriver(pdbbase);
+    testdbReadDatabase("test.db", NULL, NULL);
+
+    eltc(0);
+    testIocInitOk();
+    eltc(1);
+
+    const char *fieldName = "EGU";
+    epicsSetThreadStdout(temp);
+    testOk1(!reGetField("(.*)[13]:B", fieldName));
+
+    rewind(temp);
+
+    if((read = getline(&line, &len, temp)) != -1){
+            testOk(strcmp(line, "DIAG_MTCA01:PICO3_CH1:B.EGU 'units'\n") == 0, "reGetField found 1/2 records");
+    }
+    if((read = getline(&line, &len, temp)) != -1){
+            testOk(strcmp(line, "DIAG_MTCA01:PICO3_CH3:B.EGU 'units'\n") == 0, "reGetField found 2/2 records");
+    }
+
+    epicsSetThreadStdout(stdout);
+    fclose(temp);
+
+    testIocShutdownOk();
+}
+
 
 MAIN(reToolsTest)
 {
@@ -150,6 +189,7 @@ MAIN(reToolsTest)
     test_reAddAlias();
     test_reAddInfo();
     test_rePutField();
+    test_reGetField(); // Assumes 'test_rePutField' was ran before
     return testDone();
 }
 

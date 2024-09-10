@@ -4,6 +4,7 @@
 #include <errlog.h>
 #include <dbStaticLib.h>
 #include <dbAccessDefs.h>
+#include <epicsStdio.h>
 #include <functional>
 #include <regex>
 
@@ -73,7 +74,7 @@ long epicsShareAPI reGrep(const char *pattern)
 
     return forEachMatchingRecord(pattern, "",
         [](DBENTRY *entry, string const & recName, string const & value) {
-            printf("%s\n", recName.c_str());
+            fprintf(epicsGetStdout(),"%s\n", recName.c_str());
         });
 }
 
@@ -87,7 +88,7 @@ long epicsShareAPI reTest(const char *pattern, const char *value)
 
     return forEachMatchingRecord(pattern, value,
         [](DBENTRY *entry, string const & recName, string const & value) {
-            printf("%s\t%s\n", recName.c_str(), value.c_str());
+            fprintf(epicsGetStdout(),"%s\t%s\n", recName.c_str(), value.c_str());
         });
 }
 
@@ -105,7 +106,7 @@ long epicsShareAPI reAddAlias(const char *pattern, const char *alias)
                 errlogSevPrintf(errlogMinor, "Failed to alias %s -> %s\n",
                     recName.c_str(), alias.c_str());
             else if(reToolsVerbose)
-                printf("Alias %s -> %s created\n", recName.c_str(),
+                fprintf(epicsGetStdout(),"Alias %s -> %s created\n", recName.c_str(),
                     alias.c_str());
         });
 }
@@ -126,7 +127,7 @@ long epicsShareAPI reAddInfo(const char *pattern, const char *name,
                     "%s: Failed to add info(%s, '%s')\n", recName.c_str(),
                     name, value.c_str());
             else if(reToolsVerbose)
-                printf("%s: added info(%s, '%s')\n", recName.c_str(), name,
+                fprintf(epicsGetStdout(),"%s: added info(%s, '%s')\n", recName.c_str(), name,
                     value.c_str());
         });
 }
@@ -154,7 +155,7 @@ long epicsShareAPI rePutField(const char *pattern, const char *field,
                     "%s: Failed to put field(%s, '%s')\n", recName.c_str(),
                     field, value.c_str());
             else if(reToolsVerbose)
-                printf("%s: put field(%s, '%s')\n", recName.c_str(), field,
+                fprintf(epicsGetStdout(),"%s: put field(%s, '%s')\n", recName.c_str(), field,
                     value.c_str());
         });
 }
@@ -183,7 +184,7 @@ long epicsShareAPI reGetField(const char *pattern, const char *field)
                     "%s: Failed to get field %s\n", recName.c_str(),
                     field);
             else{
-                printf("%s.%s '%s'\n", recName.c_str(), field, buffer);
+                fprintf(epicsGetStdout(),"%s.%s '%s'\n", recName.c_str(), field, buffer);
                 }
         });
 }
