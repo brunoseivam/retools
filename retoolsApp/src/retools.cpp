@@ -13,6 +13,9 @@ using std::regex_replace;
 using std::regex_error;
 using std::string;
 
+#define VERBOSE_EACH_ALIAS  (1<<0)
+#define VERBOSE_PRINT_TOTAL (1<<1)
+
 int reToolsVerbose = 1;
 
 typedef std::function<void(DBENTRY*,string const &,string const &)>
@@ -66,7 +69,7 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
     }
     dbFinishEntry(&_entry);
     // If desired, display total of records processed
-    if(reToolsVerbose==2)
+    if(reToolsVerbose & VERBOSE_PRINT_TOTAL)
         printf("Total matches: %u\n", n_records);
     return EXIT_SUCCESS;
 }
@@ -112,7 +115,7 @@ long epicsShareAPI reAddAlias(const char *pattern, const char *alias)
                 errlogSevPrintf(errlogMinor, "Failed to alias %s -> %s\n",
                     recName.c_str(), alias.c_str());
 
-            else if(reToolsVerbose==1)
+            else if(reToolsVerbose & VERBOSE_EACH_ALIAS)
                 fprintf(epicsGetStdout(),"Alias %s -> %s created\n", recName.c_str(),
                     alias.c_str());
         });
