@@ -13,6 +13,9 @@ using std::regex_replace;
 using std::regex_error;
 using std::string;
 
+#define VERBOSE_EACH_ALIAS  (1<<0)
+#define VERBOSE_PRINT_TOTAL (1<<1)
+
 int reToolsVerbose = 1;
 
 typedef std::function<void(DBENTRY*,string const &,string const &)>
@@ -35,6 +38,7 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
     dbInitEntry(pdbbase, &_entry);
 
     long _status = dbFirstRecordType(&_entry);
+    unsigned int n_records = 0;
 
     while (!_status) {
         _status = dbFirstRecord(&_entry);
@@ -55,6 +59,8 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
 
                 func(&entry, recName, regex_replace(recName, re, replace));
                 dbFinishEntry(&entry);
+                // Count how many matches
+                n_records++;
             }
 
             _status = dbNextRecord(&_entry);
@@ -62,6 +68,9 @@ int forEachMatchingRecord(string const & pattern, string const & replace,
         _status = dbNextRecordType(&_entry);
     }
     dbFinishEntry(&_entry);
+    // If desired, display total of records processed
+    if(reToolsVerbose & VERBOSE_PRINT_TOTAL)
+        printf("Total matches: %u\n", n_records);
     return EXIT_SUCCESS;
 }
 
@@ -105,7 +114,8 @@ long epicsShareAPI reAddAlias(const char *pattern, const char *alias)
             if(dbCreateAlias(entry, alias.c_str()))
                 errlogSevPrintf(errlogMinor, "Failed to alias %s -> %s\n",
                     recName.c_str(), alias.c_str());
-            else if(reToolsVerbose)
+
+            else if(reToolsVerbose & VERBOSE_EACH_ALIAS)
                 fprintf(epicsGetStdout(),"Alias %s -> %s created\n", recName.c_str(),
                     alias.c_str());
         });
